@@ -1,0 +1,141 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  male
+  female
+}
+
+enum Status {
+  enable
+  disable
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  user_name  String   @unique
+  password   String
+  gender     Gender?
+  avatar     String?
+  phone      String?
+  email      String?
+  role_id    Int      @default(0)
+  role       Role     @relation(fields: [role_id], references: [id])
+  status     Status   @default(enable)
+  deleted    Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  deleted     Boolean  @default(false)
+  status      Status   @default(enable)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+  users       User[]
+
+  permission Permission[]
+}
+
+model Sys_Log {
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  username   String
+  operation  String
+  method     String
+  params     String
+  time       Int
+  ip         String
+  createTime DateTime @default(now())
+}
+
+model Menu {
+  id         Int      @id @default(autoincrement())
+  pid        Int      @default(0)
+  name       String?
+  title      String?
+  path       String
+  icon       String?
+  type       String   @default("page")
+  sort       Int?
+  hide       Boolean? @default(false)
+  href  String?
+  component  String?
+  status     Boolean  @default(true)
+  deleted    Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+
+  permission Permission[]
+}
+
+model Permission {
+  id         Int      @id @default(autoincrement())
+  role_id    Int
+  role       Role     @relation(fields: [role_id], references: [id])
+  menu_id    Int
+  menu       Menu     @relation(fields: [menu_id], references: [id])
+  status     Status   @default(enable)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+}
+
+model Pricing {
+  id              Int       @id @default(autoincrement())
+  name            String
+  price           Float
+  currency        String // 货币类型
+  description     String? // 定价描述
+  discount        Float? // 折扣金额或百分比
+  effective_date  DateTime? // 生效日期
+  expiration_date DateTime? // 失效日期
+  status          Status    @default(enable)
+  version         Int       @default(1) // 版本号
+  category        String? // 定价类别
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @default(now()) @updatedAt
+}
+
+model Client {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String   @unique
+  avatar     String?
+  phone      String?
+  address    String?
+  status     Status   @default(enable)
+  company    String?
+  notes      String?
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+}
+
+model Redemption_Code {
+  id              Int       @id @default(autoincrement())
+  code            String    @unique // 兑换码
+  description     String? // 兑换码描述
+  discount_amount Float? // 折扣金额
+  discount_type   String // 折扣类型，例如 "percentage" 或 "fixed"
+  usage_limit     Int? // 使用次数限制
+  used_count      Int       @default(0) // 已使用次数
+  valid_from      DateTime? // 开始有效日期
+  valid_until     DateTime? // 结束有效日期
+  status          Status    @default(enable)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @default(now()) @updatedAt
+}
