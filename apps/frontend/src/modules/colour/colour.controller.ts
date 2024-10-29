@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { ColourService } from './colour.service';
 import { storage } from '@app/common';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
@@ -19,5 +19,11 @@ export class ColourController {
     }catch(error){
       throw new HttpException('出现异常，请联系管理员', HttpStatus.INTERNAL_SERVER_ERROR)
     }
+  }
+
+
+  @Get('palettes')
+  async getPalettes(@Query('page') page = 1, @Query('limit') limit = 10) {
+    return await this.colourService.getPalettes(+page, +limit);
   }
 }

@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateColourDto } from './dto/create-colour.dto';
 import { UpdateColourDto } from './dto/update-colour.dto';
 import { resolve } from 'path';
+import { PrismaService } from '@app/prisma';
 
 @Injectable()
 export class ColourService {
+  @Inject(PrismaService)
+  private prisma: PrismaService;
+
   create(createColourDto: CreateColourDto) {
     return 'This action adds a new colour';
   }
@@ -30,5 +34,14 @@ export class ColourService {
         dominant: []
       };
     }
+  }
+
+
+  createPalettes(name: string, palette: string, description: string) {
+    return this.prisma.palettes.create({
+      data: {
+        name, palette, description
+      }
+    })
   }
 }

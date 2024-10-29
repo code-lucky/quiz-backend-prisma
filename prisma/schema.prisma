@@ -74,7 +74,7 @@ model Menu {
   type       String   @default("page")
   sort       Int?
   hide       Boolean? @default(false)
-  href  String?
+  href       String?
   component  String?
   status     Boolean  @default(true)
   deleted    Boolean  @default(false)
@@ -138,4 +138,16 @@ model Redemption_Code {
   status          Status    @default(enable)
   created_at      DateTime  @default(now())
   updated_at      DateTime  @default(now()) @updatedAt
+}
+
+model Palettes {
+  id          Int      @id @default(autoincrement())
+  name        String
+  palette     String
+  description String?
+  collect     Int      @default(0)
+  visits      Int      @default(0)
+  deleted     Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
 }
