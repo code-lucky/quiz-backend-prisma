@@ -13,46 +13,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Gender {
+enum gender {
   male
   female
 }
 
-enum Status {
+enum status {
   enable
   disable
 }
 
-model User {
+model user {
   id         Int      @id @default(autoincrement())
   user_name  String   @unique
   password   String
-  gender     Gender?
+  gender     gender?
   avatar     String?
   phone      String?
   email      String?
   role_id    Int      @default(0)
-  role       Role     @relation(fields: [role_id], references: [id])
-  status     Status   @default(enable)
+  role       role     @relation(fields: [role_id], references: [id])
+  status     status   @default(enable)
   deleted    Boolean  @default(false)
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 }
 
-model Role {
+model role {
   id          Int      @id @default(autoincrement())
   name        String   @unique
   description String?
   deleted     Boolean  @default(false)
-  status      Status   @default(enable)
+  status      status   @default(enable)
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now()) @updatedAt
-  users       User[]
+  users       user[]
 
-  permission Permission[]
+  permission permission[]
 }
 
-model Sys_Log {
+model sys_log {
   id         Int      @id @default(autoincrement())
   user_id    Int
   username   String
@@ -64,7 +64,7 @@ model Sys_Log {
   createTime DateTime @default(now())
 }
 
-model Menu {
+model menu {
   id         Int      @id @default(autoincrement())
   pid        Int      @default(0)
   name       String?
@@ -81,21 +81,21 @@ model Menu {
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 
-  permission Permission[]
+  permission permission[]
 }
 
-model Permission {
+model permission {
   id         Int      @id @default(autoincrement())
   role_id    Int
-  role       Role     @relation(fields: [role_id], references: [id])
+  role       role     @relation(fields: [role_id], references: [id])
   menu_id    Int
-  menu       Menu     @relation(fields: [menu_id], references: [id])
-  status     Status   @default(enable)
+  menu       menu     @relation(fields: [menu_id], references: [id])
+  status     status   @default(enable)
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 }
 
-model Pricing {
+model pricing {
   id              Int       @id @default(autoincrement())
   name            String
   price           Float
@@ -104,28 +104,28 @@ model Pricing {
   discount        Float? // 折扣金额或百分比
   effective_date  DateTime? // 生效日期
   expiration_date DateTime? // 失效日期
-  status          Status    @default(enable)
+  status          status    @default(enable)
   version         Int       @default(1) // 版本号
   category        String? // 定价类别
   created_at      DateTime  @default(now())
   updated_at      DateTime  @default(now()) @updatedAt
 }
 
-model Client {
+model client {
   id         Int      @id @default(autoincrement())
   name       String
   email      String   @unique
   avatar     String?
   phone      String?
   address    String?
-  status     Status   @default(enable)
+  status     status   @default(enable)
   company    String?
   notes      String?
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 }
 
-model Redemption_Code {
+model redemption_code {
   id              Int       @id @default(autoincrement())
   code            String    @unique // 兑换码
   description     String? // 兑换码描述
@@ -135,12 +135,12 @@ model Redemption_Code {
   used_count      Int       @default(0) // 已使用次数
   valid_from      DateTime? // 开始有效日期
   valid_until     DateTime? // 结束有效日期
-  status          Status    @default(enable)
+  status          status    @default(enable)
   created_at      DateTime  @default(now())
   updated_at      DateTime  @default(now()) @updatedAt
 }
 
-model Palettes {
+model palettes {
   id          Int      @id @default(autoincrement())
   name        String
   palette     String
