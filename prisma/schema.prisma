@@ -114,13 +114,14 @@ model pricing {
 model client {
   id         Int      @id @default(autoincrement())
   name       String
-  email      String   @unique
+  email      String?
   avatar     String?
   phone      String?
   address    String?
   status     status   @default(enable)
   company    String?
   notes      String?
+  openid     String?  @unique
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
 }

@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ColourModule } from './modules/colour/colour.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { FileModule } from './modules/file/file.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { FileModule } from './modules/file/file.module';
     }),
     ColourModule,
     FileModule,
+    UserModule,
   ],
   controllers: [FrontendController],
   providers: [
