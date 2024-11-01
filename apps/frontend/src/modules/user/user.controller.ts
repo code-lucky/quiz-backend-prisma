@@ -1,6 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
 import { UserService } from './user.service';
 import { WxLoginDto } from './dto/wx-login.dto';
+import { Request } from 'express';
+import { RequireFrontendLogin } from '@app/common';
 
 @Controller('user')
 export class UserController {
@@ -13,9 +15,8 @@ export class UserController {
 
 
   @Get('/info')
+  @RequireFrontendLogin()
   async getUserInfo(@Req() req: Request) {
-    const token = req.headers['authorization']?.split(' ')[1]
-    console.log('token......', token)
-    return this.userService.getUserInfo(token)
+    return this.userService.getUserInfo(+req.client.user_id)
   }
 }

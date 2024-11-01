@@ -41,7 +41,8 @@ export class ColourService {
    * 获取调色板，从数据库中获取
    * @returns 
    */
-  async getPalettes(page: number, limit: number) {
+  async getPalettes(user_id: number, page: number, limit: number) {
+
     const palettes = await this.prisma.palettes.findMany({
       skip: (page - 1) * limit,
       take: limit
@@ -58,11 +59,34 @@ export class ColourService {
       }
     });
 
+    // 获取该用户的收藏
+    const collect = await this.prisma.palette_collect.findMany({
+      where: { client_id: user_id }
+    })
+
+    // 获取每个画板的收藏数量
+    const collectCount = await this.prisma.palette_collect.groupBy({
+      by: ['palette_id'],
+      _count: {
+        _all: true
+      }
+    })
+
+    // 如果收藏了则palettes的数据是is_collect为1，否则为0
+    const newList = list.map(item => {
+      return {
+        ...item,
+        is_collect: collect.some(collect => collect.palette_id === item.id) ? 1 : 0,
+        collect_count: collectCount.find(collect => collect.palette_id === item.id)?._count._all || 0
+      }
+    })
+
+
     return {
       page,
       limit,
       total,
-      list
+      list:newList
     };
   }
 

@@ -1,6 +1,4 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import axios from 'axios';
 import { PrismaService } from '@app/prisma';
 import { JwtService } from '@nestjs/jwt';
@@ -15,8 +13,7 @@ export class UserService {
   private jwtService: JwtService;
 
   async login(code: string, nick_name: string, avatar: string) {
-    console.log('code......', code, nick_name, avatar)
-    const data = await axios.get(`https://api.weixin.qq.com/sns/jscode2session?appid=${process.env.APP_ID}&secret=${process.env.APP_SECRET}&js_code=${code}&grant_type=authorization_code`)
+    const data = await axios.get(`${process.env.OPEN_ID_URL}?appid=${process.env.APP_ID}&secret=${process.env.APP_SECRET}&js_code=${code}&grant_type=authorization_code`)
     
     if (!data.data.openid) {
       throw new HttpException('登录失败', HttpStatus.BAD_REQUEST)
@@ -54,7 +51,7 @@ export class UserService {
     
     return {
       ...userInfo,
-      token: this.jwtService.sign({ id: userInfo.id }, { expiresIn: '7d' })
+      token: this.jwtService.sign({ user_id: userInfo.id, openid: data.data.openid }, { expiresIn: '7d' })
     }
   }
 
@@ -63,10 +60,9 @@ export class UserService {
    * @param id 用户id
    * @returns 用户信息
    */
-  async getUserInfo(token: string) {
-    const user = this.jwtService.verify(token)
+  async getUserInfo(id: number) {
     return this.prisma.client.findUnique({
-      where: { id: user.id }
+      where: { id: +id }
     })
   }
 }

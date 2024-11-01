@@ -1,8 +1,11 @@
-import { Controller, Get, Inject, Query, Req } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Inject, ParseIntPipe, Query, Req } from '@nestjs/common';
 import { CollectService } from './collect.service';
 import { JwtService } from '@nestjs/jwt';
+import { RequireFrontendLogin } from '@app/common';
+import { Request } from 'express';
 
 @Controller('collect')
+@RequireFrontendLogin()
 export class CollectController {
   constructor(private readonly collectService: CollectService) {}
 
@@ -18,10 +21,8 @@ export class CollectController {
    * @returns 收藏列表
    */
   @Get('/list')
-  async getCollectList(@Req() req: Request, @Query('page') page: number, @Query('limit') limit: number) {
-    const token = req.headers['authorization']?.split(' ')[1]
-    const user = this.jwtService.verify(token)
-    return this.collectService.getCollectList(+user.id, +page, +limit)
+  async getCollectList(@Req() req: Request, @Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    return this.collectService.getCollectList(+req.client.user_id, +page, +limit)
   }
 
   /**
@@ -32,8 +33,9 @@ export class CollectController {
    */
   @Get('/change')
   async changeCollect(@Req() req: Request, @Query('palette_id') palette_id: number) {
-    const token = req.headers['authorization']?.split(' ')[1]
-    const user = this.jwtService.verify(token)
-    return this.collectService.changeCollect(+user.id, +palette_id)
+    if(!palette_id) {
+      throw new HttpException('画板id不能为空', HttpStatus.BAD_REQUEST)
+    }
+    return this.collectService.changeCollect(+req.client.user_id, +palette_id)
   }
 }

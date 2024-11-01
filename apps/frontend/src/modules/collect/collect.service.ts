@@ -31,8 +31,26 @@ export class CollectService {
             where: { id: { in: collectList.map(item => item.palette_id) } },
         })
 
+
+        // 获取每个画板的收藏数量
+        const collectCount = await this.prisma.palette_collect.groupBy({
+            by: ['palette_id'],
+            _count: {
+                _all: true
+            }
+        })
+
+        const list = paletteList.map(item => {
+            return {
+                ...item,
+                palette: item.palette.split(','),
+                is_collect: 1,
+                collect_count: collectCount.find(collect => collect.palette_id === item.id)?._count._all || 0
+            }
+        })
+
         return {
-            list: paletteList,
+            list: list,
             total,
             page,
             limit,
@@ -63,8 +81,13 @@ export class CollectService {
             })
         }
 
+        // 获取画板收藏数量
+        const collect_count = await this.prisma.palette_collect.count({
+            where: { palette_id },
+        })
+
         return {
-            success: collect ? '取消收藏成功' : '收藏成功',
+            collect_count
         }
     }
 

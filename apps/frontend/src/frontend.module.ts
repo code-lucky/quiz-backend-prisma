@@ -5,7 +5,7 @@ import { PrismaModule } from '@app/prisma';
 import { EmailModule } from '@app/email';
 import { RedisModule } from '@app/redis';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthGuard } from '@app/common';
+import { FrontendAuthGuard } from '@app/common';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
 import { ColourModule } from './modules/colour/colour.module';
@@ -48,7 +48,7 @@ import { CollectModule } from './modules/collect/collect.module';
     FrontendService,
     {
       provide: 'APP_GUARD',
-      useClass: AuthGuard,
+      useClass: FrontendAuthGuard,
     },
   ],
 })

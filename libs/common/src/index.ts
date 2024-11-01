@@ -9,3 +9,4 @@ export * from './interceptor/invoke-record.interceptor';
 export * from './interceptor/logging.interceptor';
 export * from './guard/custom.decorator';
 export * from './storage/storage';
+export * from './guard/frontend-auth.guard';
