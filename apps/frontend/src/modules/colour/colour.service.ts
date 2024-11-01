@@ -65,4 +65,16 @@ export class ColourService {
       list
     };
   }
+
+  /**
+   * 访问画板
+   * @param palette_id 画板id
+   * @returns 访问结果
+   */
+  async visitPalette(palette_id: number) {
+    return this.prisma.palettes.update({
+      where: { id: palette_id },
+      data: { visits: { increment: 1 } },
+    })
+  }
 }

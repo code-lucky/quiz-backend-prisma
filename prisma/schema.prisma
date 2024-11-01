@@ -124,6 +124,7 @@ model client {
   openid     String?  @unique
   created_at DateTime @default(now())
   updated_at DateTime @default(now()) @updatedAt
+  palette_collects palette_collect[]
 }
 
 model redemption_code {
@@ -151,4 +152,24 @@ model palettes {
   deleted     Boolean  @default(false)
   created_at  DateTime @default(now())
   updated_at  DateTime @default(now()) @updatedAt
+  palette_collects palette_collect[]
+}
+
+
+model palette_collect {
+  id          Int      @id @default(autoincrement())
+  client_id   Int
+  client      client   @relation(fields: [client_id], references: [id])
+  palette_id  Int
+  palette     palettes @relation(fields: [palette_id], references: [id])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+}
+
+model feedback {
+  id         Int      @id @default(autoincrement())
+  content    String
+  picture    String?
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
 }

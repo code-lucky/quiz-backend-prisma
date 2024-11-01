@@ -12,6 +12,7 @@ import { ColourModule } from './modules/colour/colour.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { FileModule } from './modules/file/file.module';
 import { UserModule } from './modules/user/user.module';
+import { CollectModule } from './modules/collect/collect.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { UserModule } from './modules/user/user.module';
     ColourModule,
     FileModule,
     UserModule,
+    CollectModule,
   ],
   controllers: [FrontendController],
   providers: [
