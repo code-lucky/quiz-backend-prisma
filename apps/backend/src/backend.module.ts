@@ -12,7 +12,8 @@ import { MenuModule } from './modules/menu/menu.module';
 import { PermissionModule } from './modules/permission/permission.module';
 import { join } from 'path';
 import { ConfigModule } from '@nestjs/config';
-import { ColourModule } from './modules/colour/colour.module';
+import { ClientModule } from './modules/client/client.module';
+import { PalettesModule } from './modules/palettes/palettes.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { ColourModule } from './modules/colour/colour.module';
     RoleModule,
     MenuModule,
     PermissionModule,
-    ColourModule,
+    ClientModule,
+    PalettesModule,
   ],
   controllers: [BackendController],
   providers: [
