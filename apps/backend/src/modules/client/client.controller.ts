@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ClientService } from './client.service';
 
 @Controller('client')
@@ -10,7 +10,7 @@ export class ClientController {
    * @returns 客户端列表
    */
   @Get('list')
-  async getClientList() {
-    return await this.clientService.getClientList();
+  async getClientList(@Query('page') page: number = 1, @Query('limit') limit: number = 10, @Query('name') name?: string, @Query('openid') openid?: string) {
+    return await this.clientService.getClientList(+page, +limit, name, openid);
   }
 }

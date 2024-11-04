@@ -14,10 +14,19 @@ export class PalettesService {
      * 获取调色板列表
      * @returns 调色板列表
      */
-    async getPalettesList() {
-        return await this.prisma.palettes.findMany({
-            where: { deleted: false }
+    async getPalettesList(page: number, limit: number, name?: string) {
+        const list = await this.prisma.palettes.findMany({
+            where: { deleted: false, name: { contains: name } },
+            skip: (page - 1) * limit,
+            take: limit
         });
+
+        const total = await this.prisma.palettes.count({ where: { deleted: false, name: { contains: name } } });
+
+        return {
+            list,
+            total
+        };
     }
     
     /**

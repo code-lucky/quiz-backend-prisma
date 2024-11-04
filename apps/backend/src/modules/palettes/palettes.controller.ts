@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { PalettesService } from './palettes.service';
 import { CreatePalettesDto } from './dto/create-palettes.dto';
 import { UpdatePalettesDto } from './dto/update-palettes.dto';
@@ -12,8 +12,8 @@ export class PalettesController {
    * @returns 调色板列表
    */
   @Get('list')
-  async getPalettesList() {
-    return await this.palettesService.getPalettesList();
+  async getPalettesList(@Query('page') page: number = 1, @Query('limit') limit: number = 10, @Query('name') name?: string) {
+    return await this.palettesService.getPalettesList(+page, +limit, name);
   }
 
   @Post('create')
